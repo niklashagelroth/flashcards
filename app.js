@@ -15,6 +15,13 @@ import {
   exportToFile, readImportFile, importReplace, importMerge, backupReminder,
 } from './backup.js';
 import { STARTER_DECK } from './starter-deck.js';
+import { STARTER_DECK_B1 } from './starter-deck-b1.js';
+
+// Inbyggda kortpaket. Korten har globalt unika id:n så paketen aldrig krockar.
+const PACKS = [
+  { name: 'B1 – vardagsuttryck', desc: 'extremt användbara vardagsfraser', deck: STARTER_DECK_B1 },
+  { name: 'B2 – fraser & uttryck', desc: 'konnektorer, åsikter, idiom', deck: STARTER_DECK },
+];
 
 const app = document.getElementById('app');
 const viewTitle = document.getElementById('view-title');
@@ -252,12 +259,12 @@ function emptyState(emoji, title, text) {
   ]);
 }
 
-// Ladda det inbyggda startbiblioteket. Idempotent: hoppar över kort som redan
-// finns (på id) så din inlärningshistorik aldrig skrivs över.
-async function loadStarterDeck() {
+// Ladda ett kortpaket. Idempotent: hoppar över kort som redan finns (på id)
+// så din inlärningshistorik aldrig skrivs över.
+async function loadDeck(deck) {
   const toAdd = [];
   let skipped = 0;
-  for (const seed of STARTER_DECK) {
+  for (const seed of deck) {
     if (await getCard(seed.id)) { skipped++; continue; }
     const card = createCard({ front: seed.front, back: seed.back, example: seed.example || '', tags: seed.tags || [] });
     card.id = seed.id;
@@ -267,10 +274,10 @@ async function loadStarterDeck() {
   return { added: toAdd.length, skipped };
 }
 
-async function handleLoadStarterDeck() {
-  const { added, skipped } = await loadStarterDeck();
-  if (added === 0) toast(`Startbiblioteket är redan inläst (${skipped} kort finns).`);
-  else toast(`${added} kort tillagda från startbiblioteket.`);
+async function handleLoadPack(pack) {
+  const { added, skipped } = await loadDeck(pack.deck);
+  if (added === 0) toast(`"${pack.name}" är redan inläst (${skipped} kort finns).`);
+  else toast(`${added} kort tillagda från "${pack.name}".`);
   render();
 }
 
@@ -315,10 +322,13 @@ function renderCardListOnly(cards) {
     : cards;
 
   if (cards.length === 0) {
-    wrap.appendChild(emptyState('🗂️', 'Inga kort', 'Tryck på "Nytt kort" för att lägga till ditt första — eller ladda startbiblioteket.'));
-    wrap.appendChild(el('button', {
-      class: 'btn ghost', type: 'button', onclick: handleLoadStarterDeck,
-    }, `📚 Ladda startbibliotek (${STARTER_DECK.length} B2-fraser)`));
+    wrap.appendChild(emptyState('🗂️', 'Inga kort', 'Tryck på "Nytt kort" för att lägga till ditt första — eller ladda ett färdigt paket.'));
+    for (const pack of PACKS) {
+      wrap.appendChild(el('button', {
+        class: 'btn ghost', type: 'button', style: 'margin-bottom:10px;',
+        onclick: () => handleLoadPack(pack),
+      }, `📚 ${pack.name} (${pack.deck.length} kort)`));
+    }
     return;
   }
   if (filtered.length === 0) {
@@ -527,12 +537,18 @@ async function renderBackup(cards) {
   ]);
   app.appendChild(importPanel);
 
-  // Startbibliotek
+  // Färdiga kortpaket
   const starterPanel = el('div', { class: 'panel' }, [
-    el('h2', { class: 'section' }, 'Startbibliotek'),
-    el('p', { class: 'muted', style: 'margin-top:0;' }, `${STARTER_DECK.length} färdiga B2-fraser (konnektorer, åsikter, idiom, vardag). Läggs till utan att röra dina egna kort eller din historik.`),
-    el('button', { class: 'btn ghost', type: 'button', onclick: handleLoadStarterDeck }, '📚 Ladda in startbibliotek'),
+    el('h2', { class: 'section' }, 'Färdiga kortpaket'),
+    el('p', { class: 'muted', style: 'margin-top:0;' }, 'Läggs till utan att röra dina egna kort eller din historik.'),
   ]);
+  for (const pack of PACKS) {
+    starterPanel.appendChild(el('div', { style: 'margin-bottom:14px;' }, [
+      el('div', { style: 'font-weight:600;margin-bottom:2px;' }, pack.name),
+      el('div', { class: 'muted', style: 'font-size:0.85rem;margin-bottom:6px;' }, `${pack.deck.length} kort · ${pack.desc}`),
+      el('button', { class: 'btn ghost', type: 'button', onclick: () => handleLoadPack(pack) }, '📚 Ladda in'),
+    ]));
+  }
   app.appendChild(starterPanel);
 
   // Lagringsstatus

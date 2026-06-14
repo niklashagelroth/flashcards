@@ -12,7 +12,7 @@ och all data ligger lokalt i IndexedDB med manuell backup.
 - **Svåra kort** — separat läge som plockar dina mest felade kort, oberoende av schemat.
 - **Statistik** — totalt/förfallna/övade, fördelning per box, och topplista över svåraste korten.
 - **Kort** — lägg till, redigera, ta bort och sök. Fält: franska, svenska, valfri exempelmening, valfria taggar.
-- **Startbibliotek** — 100 inbyggda B2-fraser (konnektorer, åsikter, idiom, vardagsmeningar, flera med subjonctif). Ladda in dem från tomma Kort-vyn eller under Backup. Idempotent — befintliga kort och din historik rörs aldrig.
+- **Färdiga kortpaket** — två inbyggda paket att ladda in: **B1 – vardagsuttryck** (100 extremt användbara vardagsfraser) och **B2 – fraser & uttryck** (100 konnektorer, åsikter, idiom, flera med subjonctif). Ladda dem från tomma Kort-vyn eller under Backup. Idempotent — befintliga kort och din historik rörs aldrig.
 - **Backup** — exportera hela databasen som tidsstämplad JSON (`franska-flashcards-ÅÅÅÅ-MM-DD.json`), importera med *Ersätt allt* eller *Slå ihop*. Diskret påminnelse om backup är > 7 dagar gammal eller kort ändrats sedan dess.
 
 ## Köra lokalt
@@ -46,7 +46,8 @@ python3 -m http.server 8000
 | `leitner.js` | Kortmodell + spaced repetition |
 | `stats.js` | Träffsäkerhet + urval av svåra kort |
 | `backup.js` | Export/import + backuppåminnelse |
-| `starter-deck.js` | Inbyggt startbibliotek (100 B2-fraser) |
+| `starter-deck.js` | Kortpaket B2 (100 fraser & uttryck) |
+| `starter-deck-b1.js` | Kortpaket B1 (100 vardagsuttryck) |
 | `manifest.json`, `sw.js` | PWA: installerbar + offline |
 | `icons/` | App-ikoner (regenereras med `node generate-icons.js`) |
 
