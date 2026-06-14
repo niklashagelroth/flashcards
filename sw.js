@@ -1,7 +1,7 @@
 // sw.js — Service worker för offline. Cache-first för app-skalet.
 // Höj CACHE_VERSION när du ändrar någon av filerna nedan.
 
-const CACHE_VERSION = 'v4';
+const CACHE_VERSION = 'v5';
 const CACHE_NAME = `franska-flashcards-${CACHE_VERSION}`;
 
 // Relativa sökvägar så det funkar på en GitHub Pages-subpath.

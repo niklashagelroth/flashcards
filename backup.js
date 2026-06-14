@@ -4,7 +4,9 @@
 import { getAllCards, bulkPutCards, clearCards, getCard, setMeta, getMeta } from './db.js';
 import { normalizeCard } from './leitner.js';
 
-export const EXPORT_VERSION = 1;
+// v2: SM-2 light-modell (interval/ease/reps). v1-backuper (box-modell) migreras
+// automatiskt vid import via normalizeCard.
+export const EXPORT_VERSION = 2;
 
 function pad(n) {
   return String(n).padStart(2, '0');

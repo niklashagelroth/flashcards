@@ -8,7 +8,7 @@ och all data ligger lokalt i IndexedDB med manuell backup.
 ## Funktioner
 
 - **Övningsläge** — visar svenska först, avslöjar aldrig franskan innan du vänder kortet. Knapparna *Rätt*/*Fel* uppdaterar både Leitner-box och statistik.
-- **Spaced repetition (Leitner)** — 5 boxar. Rätt → upp en box, Fel → tillbaka till box 1. Intervall: box 1 = varje session, 2 = 1 dag, 3 = 3 dagar, 4 = 7 dagar, 5 = 16 dagar.
+- **Spaced repetition (SM-2 light)** — varje kort har ett intervall och en lätthetsfaktor (`ease`). Rätt → intervallet växer (1 → 3 → 7 → 16 → 37 … dagar), så kort du kan perfekt glider iväg på allt längre intervall och slutar belasta dagshögen. Fel → tillbaka till relearning (öva igen) och `ease` sänks lite så kortet kommer tätare ett tag. Gamla box-baserade kort/backuper (v1) migreras automatiskt.
 - **Svåra kort** — separat läge som plockar dina mest felade kort, oberoende av schemat.
 - **Statistik** — totalt/förfallna/övade, fördelning per box, och topplista över svåraste korten.
 - **Kort** — lägg till, redigera, ta bort och sök. Fält: franska, svenska, valfri exempelmening, valfria taggar.

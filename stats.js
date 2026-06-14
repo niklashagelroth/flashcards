@@ -1,6 +1,6 @@
 // stats.js — Statistik per kort + urval av "svåra kort".
 
-import { NUM_BOXES, isDue } from './leitner.js';
+import { NUM_LEVELS, maturityLevel, isDue } from './leitner.js';
 
 // Antal granskningar (rätt + fel) för ett kort.
 export function reviewCount(card) {
@@ -22,17 +22,17 @@ export function accuracyLabel(card) {
 
 // Sammanfattande statistik över hela samlingen.
 export function summarize(cards, now = new Date()) {
-  const perBox = {};
-  for (let b = 1; b <= NUM_BOXES; b++) perBox[b] = 0;
+  const perLevel = {};
+  for (let l = 1; l <= NUM_LEVELS; l++) perLevel[l] = 0;
   let due = 0;
   for (const c of cards) {
-    perBox[Math.min(NUM_BOXES, Math.max(1, c.box || 1))]++;
+    perLevel[maturityLevel(c)]++;
     if (isDue(c, now)) due++;
   }
   return {
     total: cards.length,
     due,
-    perBox,
+    perLevel,
   };
 }
 

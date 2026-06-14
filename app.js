@@ -6,7 +6,7 @@ import {
 } from './db.js';
 import {
   createCard, normalizeCard, applyResult, pickDueCards, isDue,
-  NUM_BOXES, BOX_INTERVALS_DAYS,
+  NUM_LEVELS, LEVEL_NAMES, maturityLevel,
 } from './leitner.js';
 import {
   summarize, accuracy, accuracyLabel, reviewCount, pickHardCards, hardestList,
@@ -351,7 +351,8 @@ function renderCardListOnly(cards) {
 
   const list = el('div', { class: 'card-list' });
   for (const c of sorted) {
-    const meta = `Box ${c.box} · ${accuracyLabel(c)} (${reviewCount(c)} ggr)` +
+    const intervalLbl = (c.interval || 0) < 1 ? 'ny' : `${c.interval} d`;
+    const meta = `${LEVEL_NAMES[maturityLevel(c)]} · nästa ${intervalLbl} · ${accuracyLabel(c)} (${reviewCount(c)} ggr)` +
       (c.tags && c.tags.length ? ` · ${c.tags.join(', ')}` : '');
     list.appendChild(el('div', { class: 'card-item' }, [
       el('div', { class: 'ci-main' }, [
@@ -448,24 +449,22 @@ function renderStats(cards) {
     statBox(s.total, 'Kort totalt'),
     statBox(s.due, 'Förfallna'),
     statBox(cards.filter((c) => reviewCount(c) > 0).length, 'Övade'),
-    statBox(s.perBox[NUM_BOXES], `I box ${NUM_BOXES}`),
+    statBox(s.perLevel[NUM_LEVELS], 'Behärskar'),
   ]);
   app.appendChild(grid);
 
-  // Box-fördelning
-  const maxBox = Math.max(1, ...Object.values(s.perBox));
+  // Fördelning per mognadsnivå
+  const maxLevel = Math.max(1, ...Object.values(s.perLevel));
   const bars = el('div', { class: 'box-bars' });
-  for (let b = 1; b <= NUM_BOXES; b++) {
-    const count = s.perBox[b];
-    const interval = BOX_INTERVALS_DAYS[b];
-    const intervalLbl = interval === 0 ? 'varje session' : `${interval} d`;
+  for (let l = 1; l <= NUM_LEVELS; l++) {
+    const count = s.perLevel[l];
     bars.appendChild(el('div', { class: 'box-bar' }, [
-      el('div', { class: 'name', title: intervalLbl }, `Box ${b}`),
-      el('div', { class: 'track' }, [el('div', { class: 'fill', style: `width:${(count / maxBox) * 100}%` })]),
+      el('div', { class: 'name' }, LEVEL_NAMES[l]),
+      el('div', { class: 'track' }, [el('div', { class: 'fill', style: `width:${(count / maxLevel) * 100}%` })]),
       el('div', { class: 'val' }, String(count)),
     ]));
   }
-  app.appendChild(el('div', { class: 'panel' }, [el('h2', { class: 'section' }, 'Fördelning per box'), bars]));
+  app.appendChild(el('div', { class: 'panel' }, [el('h2', { class: 'section' }, 'Fördelning per mognadsnivå'), bars]));
 
   // Svåraste korten
   const hardest = hardestList(cards, 10);
