@@ -295,6 +295,22 @@ function renderCards(cards) {
     onclick: () => openCardForm(null),
   }, '+ Nytt kort'));
 
+  // Färdiga paket som ännu inte är (helt) inlästa — visas alltid, även när du
+  // redan har kort. En paketknapp försvinner först när alla dess kort finns.
+  const existingIds = new Set(cards.map((c) => c.id));
+  const offers = PACKS
+    .map((pack) => ({ pack, remaining: pack.deck.filter((s) => !existingIds.has(s.id)).length }))
+    .filter((o) => o.remaining > 0);
+  if (offers.length) {
+    const packBar = el('div', { style: 'margin-top:12px; display:flex; flex-direction:column; gap:8px;' });
+    for (const { pack, remaining } of offers) {
+      packBar.appendChild(el('button', {
+        class: 'btn ghost', type: 'button', onclick: () => handleLoadPack(pack),
+      }, `📚 ${pack.name} (+${remaining} kort)`));
+    }
+    app.appendChild(packBar);
+  }
+
   app.appendChild(el('div', { class: 'search-row', style: 'margin-top:16px;' }, [
     el('input', {
       type: 'search', placeholder: 'Sök franska, svenska, tagg…', value: cardSearch,
@@ -322,13 +338,7 @@ function renderCardListOnly(cards) {
     : cards;
 
   if (cards.length === 0) {
-    wrap.appendChild(emptyState('🗂️', 'Inga kort', 'Tryck på "Nytt kort" för att lägga till ditt första — eller ladda ett färdigt paket.'));
-    for (const pack of PACKS) {
-      wrap.appendChild(el('button', {
-        class: 'btn ghost', type: 'button', style: 'margin-bottom:10px;',
-        onclick: () => handleLoadPack(pack),
-      }, `📚 ${pack.name} (${pack.deck.length} kort)`));
-    }
+    wrap.appendChild(emptyState('🗂️', 'Inga kort', 'Tryck på "Nytt kort" för att lägga till ditt första — eller ladda ett färdigt paket med knapparna ovan.'));
     return;
   }
   if (filtered.length === 0) {
