@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+  <title>Franska Flashcards</title>
+  <meta name="description" content="Träna att tala franska — svenska först, säg på franska, vänd kortet." />
+  <link rel="manifest" href="./manifest.json" />
+  <meta name="theme-color" content="#2563eb" />
+  <link rel="stylesheet" href="./styles.css" />
+
+  <!-- iOS: lägg till på hemskärmen -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Franska" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+</head>
+<body>
+  <header class="app-header">
+    <h1 id="view-title">Franska</h1>
+    <div id="reminder" class="reminder hidden" role="status"></div>
+  </header>
+
+  <main id="app"></main>
+
+  <nav class="bottom-nav" aria-label="Huvudnavigering">
+    <button data-view="practice" class="nav-btn active" type="button">
+      <span class="nav-ico">🎯</span><span>Öva</span>
+    </button>
+    <button data-view="cards" class="nav-btn" type="button">
+      <span class="nav-ico">🗂️</span><span>Kort</span>
+    </button>
+    <button data-view="stats" class="nav-btn" type="button">
+      <span class="nav-ico">📊</span><span>Statistik</span>
+    </button>
+    <button data-view="backup" class="nav-btn" type="button">
+      <span class="nav-ico">💾</span><span>Backup</span>
+    </button>
+  </nav>
+
+  <div id="toast" class="toast hidden" role="status"></div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
